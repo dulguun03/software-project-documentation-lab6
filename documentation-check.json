@@ -1,0 +1,25 @@
+{
+  "public_symbol_count": 16,
+  "public_symbols": [
+    "server.py:SandboxServer",
+    "server.py:SandboxServer.__init__",
+    "server.py:RequestError",
+    "server.py:RequestError.__init__",
+    "server.py:fields",
+    "server.py:text_fields",
+    "server.py:Handler",
+    "server.py:Handler.__init__",
+    "server.py:Handler.log_message",
+    "server.py:Handler.send_json",
+    "server.py:Handler.envelope",
+    "server.py:Handler.parse_body",
+    "server.py:Handler.do_POST",
+    "server.py:Handler.dispatch",
+    "samples/client.py:post",
+    "samples/client.py:multipart_file"
+  ],
+  "authored_python_files_scanned": 9,
+  "debt_markers": [],
+  "failures": [],
+  "status": "passed"
+}

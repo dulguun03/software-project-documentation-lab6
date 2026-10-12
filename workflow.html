@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Contract and implementation boundaries &#8212; Sprint 06 - Personal Assistant API</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=4ded8224" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=4c7bc72c" />
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AI audit and provenance" href="audit.html" />
+    <link rel="prev" title="Python API reference" href="api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Personal Assistant API | Sprint 06</a></h1>
+
+
+
+<p class="blurb">Structured docstrings, verified examples, and an evidence-based AI audit.</p>
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Run the sandbox and build the reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Python API reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contract and implementation boundaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audit.html">AI audit and provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quality.html">Documentation quality and technical debt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">GitLab CI and Pages</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="api.html" title="previous chapter">Python API reference</a></li>
+      <li>Next: <a href="audit.html" title="next chapter">AI audit and provenance</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="contract-and-implementation-boundaries">
+<h1>Contract and implementation boundaries<a class="headerlink" href="#contract-and-implementation-boundaries" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/v1/commands</span></code> creates a proposed action. Confirmation and execution are
+separate requests at <code class="docutils literal notranslate"><span class="pre">/v1/actions/{id}/confirm</span></code> and
+<code class="docutils literal notranslate"><span class="pre">/v1/actions/{id}/execute</span></code>. Both require the same session and payload version.
+Execution without confirmation is rejected with HTTP 409. Repeated execution
+of a succeeded action returns the same simulated resource ID and does not add
+another simulated write or history entry.</p>
+<p>The server serializes POST handling with a shared lock. <code class="docutils literal notranslate"><span class="pre">dispatch</span></code> itself
+does not acquire the lock or authenticate callers; <code class="docutils literal notranslate"><span class="pre">do_POST</span></code> supplies that
+context. Directly calling <code class="docutils literal notranslate"><span class="pre">dispatch</span></code> is useful for isolated tests, but it
+must not be described as an authenticated HTTP entry point.</p>
+<p>State is held in dictionaries and is lost on restart. Contacts are a single
+fixture. The webhook endpoint validates and echoes a subscription; it does not
+persist a subscription or deliver callbacks. The bark endpoint checks the WAV
+header and returns a deterministic simulated result.</p>
+<p>The request body limit is 2 MiB. The POST handler maps known request errors to
+JSON error responses. It also maps uncaught malformed-value errors to 400 and
+unexpected errors to 500. Documentation examples must distinguish a helper’s
+Python exception from the HTTP response produced by <code class="docutils literal notranslate"><span class="pre">do_POST</span></code>.</p>
+<p>The Sprint 05 OpenAPI files remain under <code class="docutils literal notranslate"><span class="pre">docs/openapi</span></code>. They describe the
+HTTP interface; this reference documents the Python symbols implementing it.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2026, P. Dulguun.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/workflow.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

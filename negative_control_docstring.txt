@@ -1,0 +1,7 @@
+SEEDED NEGATIVE CONTROL - deliberately incorrect, excluded from production docs.
+
+"Call Handler.cancel_action(action_id) to cancel a pending Calendar action."
+
+The actual Handler has no cancel_action method. This sentence was intentionally
+introduced to verify that the reflection checker catches a ghost method. It is
+not an organically observed AI hallucination and must not be reported as one.

@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Python API reference &#8212; Sprint 06 - Personal Assistant API</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=4ded8224" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=4c7bc72c" />
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contract and implementation boundaries" href="workflow.html" />
+    <link rel="prev" title="Run the sandbox and build the reference" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Personal Assistant API | Sprint 06</a></h1>
+
+
+
+<p class="blurb">Structured docstrings, verified examples, and an evidence-based AI audit.</p>
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Run the sandbox and build the reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-server">Sandbox server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-client">Sample transport</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Contract and implementation boundaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audit.html">AI audit and provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quality.html">Documentation quality and technical debt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">GitLab CI and Pages</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="quickstart.html" title="previous chapter">Run the sandbox and build the reference</a></li>
+      <li>Next: <a href="workflow.html" title="next chapter">Contract and implementation boundaries</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="python-api-reference">
+<h1>Python API reference<a class="headerlink" href="#python-api-reference" title="Link to this heading">¶</a></h1>
+<section id="scope">
+<h2>Scope<a class="headerlink" href="#scope" title="Link to this heading">¶</a></h2>
+<p>All locally declared public classes, functions and methods in <code class="docutils literal notranslate"><span class="pre">server.py</span></code> and
+the shared <code class="docutils literal notranslate"><span class="pre">samples/client.py</span></code> transport are included. Constructors are
+included in their class reference. Inherited standard-library methods are
+outside this project’s authored API. Test helpers, build scripts, configuration,
+and executable-only sample modules are internal tools, not supported imports.
+The sample modules send HTTP requests at import time, so autodoc imports only
+their shared client. Vendored Swagger JavaScript belongs to its upstream API.</p>
+</section>
+<section id="module-server">
+<span id="sandbox-server"></span><h2>Sandbox server<a class="headerlink" href="#module-server" title="Link to this heading">¶</a></h2>
+<p>Serve the local Sprint 06 API documentation and simulated assistant endpoints.</p>
+<p>The sandbox inherits Python’s threaded HTTP server and serves the <code class="docutils literal notranslate"><span class="pre">public</span></code>
+directory for GET requests. POST requests use a fixed local bearer token and
+operate on in-memory fixtures. Calendar actions follow proposal, confirmation,
+and execution states; execution records a simulated provider write. No Google
+calls, real OAuth, AI inference, external webhook delivery, or persistence occur.
+Restarting the process clears all action and history state.</p>
+<p class="rubric">Examples</p>
+<p>Validate the session identifier used throughout the documentation:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span><span class="p">({</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">},</span> <span class="p">[</span><span class="s2">"session_id"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text_fields</span><span class="p">({</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">},</span> <span class="p">[</span><span class="s2">"session_id"</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="server.TOKEN">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">TOKEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sprint05-local-sandbox'</span></em><a class="headerlink" href="#server.TOKEN" title="Link to this definition">¶</a></dt>
+<dd><p>Fixed bearer-token fixture accepted by the local sandbox POST handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="server.LIMIT">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">LIMIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2097152</span></em><a class="headerlink" href="#server.LIMIT" title="Link to this definition">¶</a></dt>
+<dd><p>Maximum declared request body size in bytes (2 MiB).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.SandboxServer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">SandboxServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#SandboxServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.SandboxServer" title="Link to this definition">¶</a></dt>
+<dd><p>Host the HTTP sandbox and its shared, in-memory action state.</p>
+<p>Construction binds and activates a listening socket through
+<code class="docutils literal notranslate"><span class="pre">http.server.ThreadingHTTPServer</span></code>; it does not start the serving
+loop. Call <code class="docutils literal notranslate"><span class="pre">serve_forever()</span></code> to accept requests and <code class="docutils literal notranslate"><span class="pre">server_close()</span></code> to
+release the socket. POST handlers serialize their work with <code class="docutils literal notranslate"><span class="pre">lock</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>address</strong> (<em>tuple[str, int]</em>) – Host and port to bind. Port <code class="docutils literal notranslate"><span class="pre">0</span></code> requests an
+available port from the operating system.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.SandboxServer.actions">
+<span class="sig-name descname"><span class="pre">actions</span></span><a class="headerlink" href="#server.SandboxServer.actions" title="Link to this definition">¶</a></dt>
+<dd><p>Proposed and completed actions,
+keyed by generated action ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)">object</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.SandboxServer.history">
+<span class="sig-name descname"><span class="pre">history</span></span><a class="headerlink" href="#server.SandboxServer.history" title="Link to this definition">¶</a></dt>
+<dd><p>Executed action records,
+grouped by session ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)">list</a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a>[<a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a>, <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#object" title="(in Python v3.12)">object</a>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.SandboxServer.sequence">
+<span class="sig-name descname"><span class="pre">sequence</span></span><a class="headerlink" href="#server.SandboxServer.sequence" title="Link to this definition">¶</a></dt>
+<dd><p>Counter used to generate POST correlation IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.SandboxServer.provider_calls">
+<span class="sig-name descname"><span class="pre">provider_calls</span></span><a class="headerlink" href="#server.SandboxServer.provider_calls" title="Link to this definition">¶</a></dt>
+<dd><p>Number of simulated provider writes. Repeating a
+successful execution does not increment this count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.SandboxServer.lock">
+<span class="sig-name descname"><span class="pre">lock</span></span><a class="headerlink" href="#server.SandboxServer.lock" title="Link to this definition">¶</a></dt>
+<dd><p>Lock protecting the complete POST operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/threading.html#threading.Lock" title="(in Python v3.12)">threading.Lock</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>SandboxServer</em> – Bound server with empty action and history collections.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If the listening socket cannot be created, bound, or activated.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OverflowError" title="(in Python v3.12)"><strong>OverflowError</strong></a> – If the supplied port is outside the valid socket range.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If the address has an invalid type or structure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Bind an available local port, inspect initial state, and close without
+starting the serving loop or contacting an external service:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">server</span> <span class="o">=</span> <span class="n">SandboxServer</span><span class="p">((</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="n">server</span><span class="o">.</span><span class="n">history</span><span class="p">,</span> <span class="n">server</span><span class="o">.</span><span class="n">provider_calls</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">finally</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">server</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span>
+<span class="go">{} {} 0</span>
+</pre></div>
+</div>
+<p>Bind the inherited HTTP server and initialize shared sandbox state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>address</strong> (<em>tuple[str, int]</em>) – Listening host and port, forwarded to
+<code class="docutils literal notranslate"><span class="pre">ThreadingHTTPServer</span></code> with <code class="docutils literal notranslate"><span class="pre">Handler</span></code> as the request class.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – Initializes the socket, state dictionaries, counters, and lock.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If creating, binding, or activating the socket fails.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OverflowError" title="(in Python v3.12)"><strong>OverflowError</strong></a> – If the port is outside the valid socket range.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If the address has an invalid type or structure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">server</span> <span class="o">=</span> <span class="n">SandboxServer</span><span class="p">((</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">sequence</span><span class="p">,</span> <span class="n">server</span><span class="o">.</span><span class="n">provider_calls</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">finally</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">server</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span>
+<span class="go">0 0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="server.RequestError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">RequestError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#RequestError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.RequestError" title="Link to this definition">¶</a></dt>
+<dd><p>Carry an HTTP status and a user-facing sandbox validation message.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Handler.do_POST</span></code> catches this exception and serializes its attributes
+into the documented error response. The constructor stores its arguments
+without validating their types or formatting the message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>status</strong> (<em>int</em>) – HTTP error status, such as <code class="docutils literal notranslate"><span class="pre">400</span></code> or <code class="docutils literal notranslate"><span class="pre">409</span></code>.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – Explanation suitable for the JSON <code class="docutils literal notranslate"><span class="pre">user_message</span></code> field.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.RequestError.status">
+<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#server.RequestError.status" title="Link to this definition">¶</a></dt>
+<dd><p>HTTP status to send.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.RequestError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#server.RequestError.message" title="Link to this definition">¶</a></dt>
+<dd><p>User-facing explanation of the failure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>RequestError</em> – Exception carrying the supplied status and message.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>No exceptions are raised. Construction performs only attribute assignment.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">RequestError</span><span class="p">(</span><span class="mi">409</span><span class="p">,</span> <span class="s2">"Confirm Sprint 06 review before execution."</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+<span class="go">409 Confirm Sprint 06 review before execution.</span>
+</pre></div>
+</div>
+<p>Store the HTTP status and message for the POST error handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>status</strong> (<em>int</em>) – HTTP error status to report.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – User-facing error explanation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – Assigns <code class="docutils literal notranslate"><span class="pre">status</span></code> and <code class="docutils literal notranslate"><span class="pre">message</span></code> to the exception instance.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>No exceptions are raised. No application-level validation is performed.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">RequestError</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">"session_id must be a nonempty string."</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">message</span>
+<span class="go">(400, 'session_id must be a nonempty string.')</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.fields">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.fields" title="Link to this definition">¶</a></dt>
+<dd><p>Require a dictionary with exactly the specified field names.</p>
+<p>Values are not inspected. Call <code class="docutils literal notranslate"><span class="pre">text_fields</span></code> separately to validate
+string content where needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payload</strong> (<em>dict[str, object]</em>) – Request object whose keys must match.</p></li>
+<li><p><strong>names</strong> (<em>list[str] | tuple[str, …]</em>) – Required field names. Key order
+does not affect validation; this order appears in error messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – Successful validation leaves the payload unchanged.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#server.RequestError" title="server.RequestError"><strong>RequestError</strong></a> – With status <code class="docutils literal notranslate"><span class="pre">400</span></code> if the payload is not a dictionary or
+    has missing or extra fields.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">names</span></code> is not iterable, contains unhashable elements,
+    or contains non-string elements needed for an error message.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="p">[</span><span class="s2">"session_id"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">payload</span>
+<span class="go">{'session_id': 'session_anu_01'}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="server.text_fields">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">text_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#text_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.text_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Require each selected field to contain a nonempty string.</p>
+<p>Whitespace is used only to detect empty content; original values are not
+trimmed or otherwise changed. This helper assumes the fields already
+exist, normally after a successful call to <code class="docutils literal notranslate"><span class="pre">fields</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payload</strong> (<em>dict[str, object]</em>) – Request object containing the named fields.</p></li>
+<li><p><strong>names</strong> (<em>list[str] | tuple[str, …]</em>) – Keys whose values must be strings
+with at least one non-whitespace character.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – Successful validation leaves all field values unchanged.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#server.RequestError" title="server.RequestError"><strong>RequestError</strong></a> – With status <code class="docutils literal notranslate"><span class="pre">400</span></code> if a selected value is not a string
+    or contains only whitespace.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#KeyError" title="(in Python v3.12)"><strong>KeyError</strong></a> – If a selected field is missing from the payload.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If the supplied payload or field-name collection cannot
+    support the expected iteration and dictionary lookup operations.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Sprint 06 review"</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="p">[</span><span class="s2">"session_id"</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text_fields</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="p">[</span><span class="s2">"session_id"</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">payload</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span>
+<span class="go">'Sprint 06 review'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="server.Handler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">Handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler" title="Link to this definition">¶</a></dt>
+<dd><p>Serve static documentation and implement the sandbox POST API.</p>
+<p>Inherited GET/HEAD behavior serves <code class="docutils literal notranslate"><span class="pre">ROOT</span> <span class="pre">/</span> <span class="pre">&quot;public&quot;</span></code>. The server creates
+one handler for an accepted client connection; inherited initialization
+processes that connection immediately. Helpers can be demonstrated without
+network activity by creating an inert instance with <code class="docutils literal notranslate"><span class="pre">__new__</span></code> and setting
+the state each helper requires.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<em>object</em>) – Positional arguments forwarded to the inherited request
+constructor: client socket, client address, and server instance.</p></li>
+<li><p><strong>**kwargs</strong> (<em>object</em>) – Supported inherited constructor keyword arguments,
+such as <code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">client_address</span></code>, and <code class="docutils literal notranslate"><span class="pre">server</span></code> when not
+supplied positionally. Do not supply <code class="docutils literal notranslate"><span class="pre">directory</span></code>; this class
+supplies its static documentation directory explicitly.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.Handler.server">
+<span class="sig-name descname"><span class="pre">server</span></span><a class="headerlink" href="#server.Handler.server" title="Link to this definition">¶</a></dt>
+<dd><p>Server providing shared action state and lock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#server.SandboxServer" title="server.SandboxServer">SandboxServer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.Handler.correlation">
+<span class="sig-name descname"><span class="pre">correlation</span></span><a class="headerlink" href="#server.Handler.correlation" title="Link to this definition">¶</a></dt>
+<dd><p>Generated correlation ID, assigned by <code class="docutils literal notranslate"><span class="pre">do_POST</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.Handler.request_bytes">
+<span class="sig-name descname"><span class="pre">request_bytes</span></span><a class="headerlink" href="#server.Handler.request_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>Capped request body read by <code class="docutils literal notranslate"><span class="pre">do_POST</span></code> before
+<code class="docutils literal notranslate"><span class="pre">parse_body</span></code> is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bytes" title="(in Python v3.12)">bytes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Handler</em> – Handler that has processed its supplied client connection.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If inherited constructor arguments are missing, duplicated,
+    unsupported, or include a second <code class="docutils literal notranslate"><span class="pre">directory</span></code> value.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If inherited socket setup, request processing, or cleanup fails.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="s2">"corr_sandbox_0001"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">envelope</span><span class="p">(</span><span class="s2">"proposed"</span><span class="p">,</span> <span class="s2">"Review Sprint 06 review before confirming."</span><span class="p">)</span>
+<span class="go">{'status': 'proposed', 'user_message': 'Review Sprint 06 review before confirming.', 'correlation_id': 'corr_sandbox_0001'}</span>
+</pre></div>
+</div>
+<p>Process a connection using the fixed static documentation directory.</p>
+<p>This forwards to <code class="docutils literal notranslate"><span class="pre">SimpleHTTPRequestHandler</span></code> and ultimately
+<code class="docutils literal notranslate"><span class="pre">BaseRequestHandler(request,</span> <span class="pre">client_address,</span> <span class="pre">server)</span></code>. It handles the
+connection during construction rather than deferring processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<em>object</em>) – Inherited positional arguments: client socket,
+client address, and server, in that order.</p></li>
+<li><p><strong>**kwargs</strong> (<em>object</em>) – Equivalent inherited keyword arguments when not
+already positional. <code class="docutils literal notranslate"><span class="pre">directory</span></code> is supplied by this method
+and must not also appear here.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – Initializes and processes the inherited request handler.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If forwarded arguments are invalid, missing, duplicated,
+    or include a conflicting <code class="docutils literal notranslate"><span class="pre">directory</span></code> argument.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If inherited socket setup, request handling, or cleanup
+    cannot complete.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Mock inherited initialization to inspect the directory argument
+without opening or processing a connection:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">patch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">patch</span><span class="o">.</span><span class="n">object</span><span class="p">(</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">,</span> <span class="s2">"__init__"</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">initialize</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">(</span><span class="s2">"client-socket"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="mi">12345</span><span class="p">),</span> <span class="s2">"sandbox-server"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">initialize</span><span class="o">.</span><span class="n">call_args</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">"directory"</span><span class="p">]</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"public"</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.Handler.log_message">
+<span class="sig-name descname"><span class="pre">log_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler.log_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler.log_message" title="Link to this definition">¶</a></dt>
+<dd><p>Suppress inherited access/error log messages and request content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> (<em>str</em>) – Format string passed by inherited HTTP logging hooks.
+It is accepted for compatibility and ignored.</p></li>
+<li><p><strong>*args</strong> (<em>object</em>) – Formatting values accepted and ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – No log output is produced.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>No exceptions are raised. The method does not format, inspect, or write its arguments.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s2">"Session </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"session_anu_01"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.Handler.send_json">
+<span class="sig-name descname"><span class="pre">send_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler.send_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler.send_json" title="Link to this definition">¶</a></dt>
+<dd><p>Write a UTF-8 JSON HTTP response with caching disabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>code</strong> (<em>int</em>) – HTTP status code passed to the inherited response writer.</p></li>
+<li><p><strong>body</strong> (<em>object</em>) – JSON-serializable response value. Non-ASCII text is
+emitted directly in UTF-8.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>None</em> – Writes status, content headers, and encoded body to <code class="docutils literal notranslate"><span class="pre">wfile</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If the body is not JSON-serializable or the status code
+    is incompatible with inherited HTTP formatting.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If JSON serialization finds a circular container.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#UnicodeError" title="(in Python v3.12)"><strong>UnicodeError</strong></a> – If text cannot be encoded as UTF-8.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If the response stream cannot be written.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If inherited request state or the output stream
+    has not been initialized.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Use an in-memory stream with the inherited response writer:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">request_version</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="s2">"HTTP/1.1"</span><span class="p">,</span> <span class="s2">"POST"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">requestline</span> <span class="o">=</span> <span class="s2">"POST /v1/sessions/history HTTP/1.1"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">wfile</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">{'session_id': 'session_anu_01'}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.Handler.envelope">
+<span class="sig-name descname"><span class="pre">envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler.envelope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler.envelope" title="Link to this definition">¶</a></dt>
+<dd><p>Create the common response fields for the current POST request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>status</strong> (<em>str</em>) – Result state, such as <code class="docutils literal notranslate"><span class="pre">proposed</span></code>, <code class="docutils literal notranslate"><span class="pre">confirmed</span></code>,
+<code class="docutils literal notranslate"><span class="pre">succeeded</span></code>, or <code class="docutils literal notranslate"><span class="pre">error</span></code>.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – User-facing description of the result.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>dict[str, str]</em> – <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">user_message</span></code>, and the handler’s
+current <code class="docutils literal notranslate"><span class="pre">correlation_id</span></code>. Values are copied without validation.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">correlation</span></code> has not yet been assigned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="s2">"corr_sandbox_0001"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">envelope</span><span class="p">(</span><span class="s2">"proposed"</span><span class="p">,</span> <span class="s2">"Review Sprint 06 review."</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">"status"</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s2">"correlation_id"</span><span class="p">]</span>
+<span class="go">('proposed', 'corr_sandbox_0001')</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.Handler.parse_body">
+<span class="sig-name descname"><span class="pre">parse_body</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler.parse_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler.parse_body" title="Link to this definition">¶</a></dt>
+<dd><p>Validate the declared body size and decode the previously read bytes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">do_POST</span></code> must first populate <code class="docutils literal notranslate"><span class="pre">request_bytes</span></code>. This helper does not
+read from <code class="docutils literal notranslate"><span class="pre">rfile</span></code> or verify that the actual byte count equals the
+declared length. It accepts JSON for ordinary paths and multipart form
+data for the photo and bark-audio upload paths, and sets a ten-second
+timeout on the connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>object</em> – Decoded JSON value of any JSON type, or a multipart field
+dictionary. Multipart text values are UTF-8 strings; file values
+are dictionaries containing basename <code class="docutils literal notranslate"><span class="pre">filename</span></code>, MIME
+<code class="docutils literal notranslate"><span class="pre">content_type</span></code>, and raw <code class="docutils literal notranslate"><span class="pre">data</span></code> bytes. Endpoint-specific object
+and field validation occurs later in <code class="docutils literal notranslate"><span class="pre">dispatch</span></code>.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#server.RequestError" title="server.RequestError"><strong>RequestError</strong></a> – With <code class="docutils literal notranslate"><span class="pre">400</span></code> for absent/invalid declared lengths,
+    malformed JSON or multipart structure, or duplicate multipart
+    fields; <code class="docutils literal notranslate"><span class="pre">413</span></code> for a declared length over <code class="docutils literal notranslate"><span class="pre">LIMIT</span></code>; or
+    <code class="docutils literal notranslate"><span class="pre">415</span></code> for an unsupported content type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#UnicodeError" title="(in Python v3.12)"><strong>UnicodeError</strong></a> – If a multipart text field cannot be decoded as UTF-8.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If setting the connection timeout fails.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If required handler state such as <code class="docutils literal notranslate"><span class="pre">request_bytes</span></code>
+    has not been initialized.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Decode a history request using an inert handler and mocked socket:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mock</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">"/v1/sessions/history"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">request_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'{"session_id": "session_anu_01"}'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Length"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">request_bytes</span><span class="p">)),</span> <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">Mock</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">parse_body</span><span class="p">()</span>
+<span class="go">{'session_id': 'session_anu_01'}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.Handler.do_POST">
+<span class="sig-name descname"><span class="pre">do_POST</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler.do_POST"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler.do_POST" title="Link to this definition">¶</a></dt>
+<dd><p>Authenticate, parse, dispatch, and respond to one sandbox POST request.</p>
+<p>The server lock protects correlation numbering and endpoint state for
+the complete operation. Request reads are capped at <code class="docutils literal notranslate"><span class="pre">LIMIT</span> <span class="pre">+</span> <span class="pre">1</span></code> bytes.
+Authorization must be <code class="docutils literal notranslate"><span class="pre">Bearer</span> <span class="pre">``</span> <span class="pre">followed</span> <span class="pre">by</span> <span class="pre">``TOKEN</span></code>; a missing or
+invalid value produces <code class="docutils literal notranslate"><span class="pre">401</span></code>. The optional <code class="docutils literal notranslate"><span class="pre">X-Sandbox-Failure</span></code> header
+simulates <code class="docutils literal notranslate"><span class="pre">403</span></code>, <code class="docutils literal notranslate"><span class="pre">500</span></code>, or <code class="docutils literal notranslate"><span class="pre">503</span></code> before dispatch. <code class="docutils literal notranslate"><span class="pre">RequestError</span></code>
+becomes its specified HTTP error response;
+field/JSON type errors become <code class="docutils literal notranslate"><span class="pre">400</span></code> and other processing exceptions
+become <code class="docutils literal notranslate"><span class="pre">500</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>None</em> – Writes one JSON response when the connection remains usable.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If writing an error response also fails, for example after
+    a client disconnect. Errors while sending the normal response
+    first trigger an attempted <code class="docutils literal notranslate"><span class="pre">500</span></code> response.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If the handler lacks server lock/counter state
+    needed before entering its exception-handling block.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Capture a response using in-memory request data and test doubles:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleNamespace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mock</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">lock</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">(),</span> <span class="n">sequence</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">"/v1/sessions/history"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">raw</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'{"session_id": "session_anu_01"}'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Length"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">)),</span> <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span> <span class="s2">"Authorization"</span><span class="p">:</span> <span class="s2">"Bearer "</span> <span class="o">+</span> <span class="n">TOKEN</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">rfile</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">raw</span><span class="p">),</span> <span class="n">Mock</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">send_json</span> <span class="o">=</span> <span class="n">Mock</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">do_POST</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">response</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">send_json</span><span class="o">.</span><span class="n">call_args</span><span class="o">.</span><span class="n">args</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">response</span><span class="p">[</span><span class="s2">"status"</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="s2">"items"</span><span class="p">]</span>
+<span class="go">(200, 'succeeded', [])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="server.Handler.dispatch">
+<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Handler.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#server.Handler.dispatch" title="Link to this definition">¶</a></dt>
+<dd><p>Execute the endpoint selected by <code class="docutils literal notranslate"><span class="pre">path</span></code> against sandbox fixtures.</p>
+<p>Calendar requests propose actions; confirmation requires the matching
+session and payload version. Execution requires confirmation and is
+idempotent once successful: retries preserve one history record and one
+simulated provider write. Other routes search fixture contacts, read
+session history, inspect fixture uploads, or return a simulated webhook
+subscription. No route invokes an external provider.</p>
+<p>Authentication and locking belong to <code class="docutils literal notranslate"><span class="pre">do_POST</span></code>; callers using this
+helper directly must supply initialized server state and coordinate any
+concurrent access themselves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>payload</strong> (<em>dict[str, object]</em>) – Parsed endpoint request. Commands need
+exactly <code class="docutils literal notranslate"><span class="pre">session_id</span></code>, <code class="docutils literal notranslate"><span class="pre">transcript</span></code>, <code class="docutils literal notranslate"><span class="pre">intent</span></code>, and <code class="docutils literal notranslate"><span class="pre">event</span></code>;
+the supported intent is <code class="docutils literal notranslate"><span class="pre">calendar.create</span></code>. Its event needs
+<code class="docutils literal notranslate"><span class="pre">title</span></code>, timezone-aware ISO <code class="docutils literal notranslate"><span class="pre">start</span></code>/<code class="docutils literal notranslate"><span class="pre">end</span></code> with end after
+start, and <code class="docutils literal notranslate"><span class="pre">timezone</span></code> equal to <code class="docutils literal notranslate"><span class="pre">Asia/Ulaanbaatar</span></code>. Action
+confirmation/execution need <code class="docutils literal notranslate"><span class="pre">session_id</span></code> and positive integer
+<code class="docutils literal notranslate"><span class="pre">payload_version</span></code>. Other routes enforce their own exact field
+sets. Uploads use the file dictionaries from <code class="docutils literal notranslate"><span class="pre">parse_body</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>tuple[int, dict[str, object]]</em> – HTTP status and JSON response object.
+Successful responses use <code class="docutils literal notranslate"><span class="pre">200</span></code>, except webhook subscription
+creation uses <code class="docutils literal notranslate"><span class="pre">201</span></code>. Command/action, contact, and history results
+include the common envelope; upload and subscription results have
+their endpoint-specific fields.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#server.RequestError" title="server.RequestError"><strong>RequestError</strong></a> – With <code class="docutils literal notranslate"><span class="pre">400</span></code> for request validation failures, <code class="docutils literal notranslate"><span class="pre">404</span></code>
+    for unknown endpoints/resources/session actions, <code class="docutils literal notranslate"><span class="pre">409</span></code> for
+    action version/state conflicts, or <code class="docutils literal notranslate"><span class="pre">415</span></code> for invalid upload
+    fixture types/signatures.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If a datetime or callback URL cannot be parsed.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#KeyError" title="(in Python v3.12)"><strong>KeyError</strong></a> – If an upload dictionary lacks an accessed metadata field.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If nested upload data has an incompatible value type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If upload data lacks the expected byte operations,
+    or required handler/server state has not been initialized.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Propose, confirm, and execute an action entirely in memory. Repeating
+execution does not duplicate the simulated provider write:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleNamespace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Handler</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">actions</span><span class="o">=</span><span class="p">{},</span> <span class="n">history</span><span class="o">=</span><span class="p">{},</span> <span class="n">provider_calls</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="s2">"corr_sandbox_0001"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">"/v1/commands"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">"transcript"</span><span class="p">:</span> <span class="s2">"Create Sprint 06 review at 10:00 in Ulaanbaatar."</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">"intent"</span><span class="p">:</span> <span class="s2">"calendar.create"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">"event"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Sprint 06 review"</span><span class="p">,</span> <span class="s2">"start"</span><span class="p">:</span> <span class="s2">"2026-10-12T10:00+08:00"</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="s2">"end"</span><span class="p">:</span> <span class="s2">"2026-10-12T10:30+08:00"</span><span class="p">,</span> <span class="s2">"timezone"</span><span class="p">:</span> <span class="s2">"Asia/Ulaanbaatar"</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">proposal</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">proposal</span><span class="p">[</span><span class="s2">"action_id"</span><span class="p">],</span> <span class="n">proposal</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span>
+<span class="go">(200, 'action_0001', 'proposed')</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_request</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"session_id"</span><span class="p">:</span> <span class="s2">"session_anu_01"</span><span class="p">,</span> <span class="s2">"payload_version"</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">"/v1/actions/action_0001/confirm"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">action_request</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span>
+<span class="go">'confirmed'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">handler</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">"/v1/actions/action_0001/execute"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">action_request</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">code</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">action_request</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">"status"</span><span class="p">],</span> <span class="n">handler</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">provider_calls</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">"session_anu_01"</span><span class="p">])</span>
+<span class="go">('succeeded', 1, 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="server.ROOT">
+<span class="sig-prename descclassname"><span class="pre">server.</span></span><span class="sig-name descname"><span class="pre">ROOT</span></span><a class="headerlink" href="#server.ROOT" title="Link to this definition">¶</a></dt>
+<dd><p>Directory containing the server and its static <code class="docutils literal notranslate"><span class="pre">public</span></code> files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/pathlib.html#pathlib.Path" title="(in Python v3.12)">pathlib.Path</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-client">
+<span id="sample-transport"></span><h2>Sample transport<a class="headerlink" href="#module-client" title="Link to this heading">¶</a></h2>
+<p>Send JSON and multipart requests for the executable Sprint 06 samples.</p>
+<p>The public API consists of <a class="reference internal" href="#client.post" title="client.post"><code class="xref py py-func docutils literal notranslate"><span class="pre">post()</span></code></a> and <a class="reference internal" href="#client.multipart_file" title="client.multipart_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">multipart_file()</span></code></a>. Importing
+this module reads configuration but does not contact the sandbox. The default
+token is a public credential for the local teaching sandbox only. Set
+<code class="docutils literal notranslate"><span class="pre">API_BASE_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">API_AUTH_TOKEN</span></code> before import to override the defaults.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="client.BASE_URL">
+<span class="sig-prename descclassname"><span class="pre">client.</span></span><span class="sig-name descname"><span class="pre">BASE_URL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://127.0.0.1:8080/v1'</span></em><a class="headerlink" href="#client.BASE_URL" title="Link to this definition">¶</a></dt>
+<dd><p>API prefix, read once at import; endpoint paths are appended without joining.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="client.AUTH_TOKEN">
+<span class="sig-prename descclassname"><span class="pre">client.</span></span><span class="sig-name descname"><span class="pre">AUTH_TOKEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sprint05-local-sandbox'</span></em><a class="headerlink" href="#client.AUTH_TOKEN" title="Link to this definition">¶</a></dt>
+<dd><p>Bearer credential, read once at import; the default is local sandbox data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="client.post">
+<span class="sig-prename descclassname"><span class="pre">client.</span></span><span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'application/json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client.html#post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.post" title="Link to this definition">¶</a></dt>
+<dd><p>POST a request, print its status and JSON response, and return the JSON.</p>
+<p>A non-<code class="docutils literal notranslate"><span class="pre">None</span></code> <code class="docutils literal notranslate"><span class="pre">body</span></code> takes priority over <code class="docutils literal notranslate"><span class="pre">payload</span></code>, including empty
+bytes. Otherwise <code class="docutils literal notranslate"><span class="pre">payload</span></code> is JSON-encoded as UTF-8, even when a different
+content type is supplied. The request uses the configured bearer token and
+a ten-second <code class="docutils literal notranslate"><span class="pre">urlopen</span></code> timeout. Response schemas are not validated here.
+HTTP errors propagate before a success record can be printed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Endpoint suffix beginning with <code class="docutils literal notranslate"><span class="pre">/</span></code>, for example
+<code class="docutils literal notranslate"><span class="pre">/pets/upload-photo</span></code>. Appended directly to <a class="reference internal" href="#client.BASE_URL" title="client.BASE_URL"><code class="xref py py-data docutils literal notranslate"><span class="pre">BASE_URL</span></code></a>.</p></li>
+<li><p><strong>payload</strong> (<em>object | None</em>) – JSON-serializable request value. Defaults to
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, which sends JSON <code class="docutils literal notranslate"><span class="pre">null</span></code> when no raw body is provided.</p></li>
+<li><p><strong>body</strong> (<em>bytes | None</em>) – Optional already-encoded request body, such as
+the multipart bytes returned by <a class="reference internal" href="#client.multipart_file" title="client.multipart_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">multipart_file()</span></code></a>.</p></li>
+<li><p><strong>content_type</strong> (<em>str</em>) – Value of the request’s <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header.
+Defaults to <code class="docutils literal notranslate"><span class="pre">application/json</span></code>; use the generated multipart
+content type when sending a file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>object</em> – Decoded response JSON, normally a <code class="docutils literal notranslate"><span class="pre">dict</span></code> for the sandbox
+endpoints. The return value does not contain the HTTP status. A JSON
+record with <code class="docutils literal notranslate"><span class="pre">http_status</span></code> and <code class="docutils literal notranslate"><span class="pre">body</span></code> is also printed to stdout.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">payload</span></code> cannot be JSON-serialized and no body is
+    provided.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If JSON serialization finds a circular reference, or the
+    configured URL is invalid.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/urllib.error.html#urllib.error.HTTPError" title="(in Python v3.12)"><strong>urllib.error.HTTPError</strong></a> – If the server returns an HTTP error, including
+    validation, authentication, and unsupported-media responses.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/urllib.error.html#urllib.error.URLError" title="(in Python v3.12)"><strong>urllib.error.URLError</strong></a> – If opening the URL fails, including connection
+    failures. The underlying cause is available as <code class="docutils literal notranslate"><span class="pre">reason</span></code>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#TimeoutError" title="(in Python v3.12)"><strong>TimeoutError</strong></a> – If a socket operation reaches its timeout.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If a response read or stdout write fails.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/json.html#json.JSONDecodeError" title="(in Python v3.12)"><strong>json.JSONDecodeError</strong></a> – If the response is not valid JSON.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#UnicodeDecodeError" title="(in Python v3.12)"><strong>UnicodeDecodeError</strong></a> – If response bytes cannot be decoded as JSON text.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#UnicodeEncodeError" title="(in Python v3.12)"><strong>UnicodeEncodeError</strong></a> – If stdout cannot represent the printed response.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Upload the included Einstein PNG using a mocked response. This example
+reads the local fixture and performs no network requests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">redirect_stdout</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">patch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">photo</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">"assets"</span> <span class="o">/</span> <span class="s2">"einstein.png"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">media_type</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">multipart_file</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">"photo"</span><span class="p">,</span> <span class="n">photo</span><span class="p">,</span> <span class="s2">"image/png"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"pet_id"</span><span class="p">:</span> <span class="s2">"corgi_98231"</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expected</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"pet_id"</span><span class="p">:</span> <span class="s2">"corgi_98231"</span><span class="p">,</span> <span class="s2">"photo_id"</span><span class="p">:</span> <span class="s2">"photo_0001"</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s2">"filename"</span><span class="p">:</span> <span class="s2">"einstein.png"</span><span class="p">,</span> <span class="s2">"bytes_received"</span><span class="p">:</span> <span class="n">photo</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">"client.urlopen"</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="n">response</span><span class="p">)</span> <span class="k">as</span> <span class="n">transport</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/pets/upload-photo"</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="n">media_type</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">==</span> <span class="n">expected</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())[</span><span class="s2">"http_status"</span><span class="p">]</span>
+<span class="go">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transport</span><span class="o">.</span><span class="n">call_args</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">data</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="client.multipart_file">
+<span class="sig-prename descclassname"><span class="pre">client.</span></span><span class="sig-name descname"><span class="pre">multipart_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/client.html#multipart_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#client.multipart_file" title="Link to this definition">¶</a></dt>
+<dd><p>Build a multipart body containing text fields and one complete file.</p>
+<p>Text fields retain mapping iteration order and use their string
+representations. The file follows those fields, and the body ends with a
+closing boundary. The entire file and body are held in memory. The fixed
+boundary and unescaped field names, values, and filename are intended for
+the controlled lab fixtures; this helper does not validate them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<em>str</em>) – Form field for the file, such as <code class="docutils literal notranslate"><span class="pre">photo</span></code> or <code class="docutils literal notranslate"><span class="pre">audio</span></code>.</p></li>
+<li><p><strong>file_path</strong> (<em>pathlib.Path</em>) – Local file to read. Its <code class="docutils literal notranslate"><span class="pre">name</span></code> property is
+used as the multipart filename.</p></li>
+<li><p><strong>media_type</strong> (<em>str</em>) – File-part <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code>, for example <code class="docutils literal notranslate"><span class="pre">image/png</span></code>
+or <code class="docutils literal notranslate"><span class="pre">audio/wav</span></code>. Copied into the body without validation.</p></li>
+<li><p><strong>fields</strong> (<em>Mapping[str, object]</em>) – Additional text form fields, such as
+<code class="docutils literal notranslate"><span class="pre">{&quot;pet_id&quot;:</span> <span class="pre">&quot;corgi_98231&quot;}</span></code>; each value is formatted as text.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>tuple[bytes, str]</em> – Complete request body and matching multipart
+<code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header, including the boundary parameter. Pass these
+as <code class="docutils literal notranslate"><span class="pre">body</span></code> and <code class="docutils literal notranslate"><span class="pre">content_type</span></code> to <a class="reference internal" href="#client.post" title="client.post"><code class="xref py py-func docutils literal notranslate"><span class="pre">post()</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#FileNotFoundError" title="(in Python v3.12)"><strong>FileNotFoundError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">file_path</span></code> does not exist.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#PermissionError" title="(in Python v3.12)"><strong>PermissionError</strong></a> – If the file cannot be read with current permissions.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#OSError" title="(in Python v3.12)"><strong>OSError</strong></a> – If another filesystem error prevents reading the file.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.12/library/exceptions.html#UnicodeEncodeError" title="(in Python v3.12)"><strong>UnicodeEncodeError</strong></a> – If a field or filename contains text that cannot
+    be encoded as UTF-8.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Build a Corg.ly Einstein photo request without contacting a server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">photo</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">"assets"</span> <span class="o">/</span> <span class="s2">"einstein.png"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">media_type</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">multipart_file</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">"photo"</span><span class="p">,</span> <span class="n">photo</span><span class="p">,</span> <span class="s2">"image/png"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"pet_id"</span><span class="p">:</span> <span class="s2">"corgi_98231"</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">media_type</span>
+<span class="go">'multipart/form-data; boundary=Sprint05MultipartBoundary91'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">b</span><span class="s1">'name="pet_id"</span><span class="se">\r\n\r\n</span><span class="s1">corgi_98231'</span> <span class="ow">in</span> <span class="n">data</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">b</span><span class="s1">'name="photo"; filename="einstein.png"'</span> <span class="ow">in</span> <span class="n">data</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">photo</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span> <span class="ow">in</span> <span class="n">data</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2026, P. Dulguun.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

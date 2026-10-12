@@ -1,0 +1,10 @@
+body { color: #233348; }
+div.document { margin-top: 32px; }
+div.body h1, div.body h2, div.body h3 { color: #163a5f; font-family: system-ui, sans-serif; }
+div.body h1 { border-bottom: 3px solid #16a394; padding-bottom: 14px; }
+div.body a { color: #006c78; }
+div.sphinxsidebar h3, div.sphinxsidebar h4 { font-family: system-ui, sans-serif; }
+div.body pre { padding: 15px; border-left: 3px solid #16a394; border-radius: 4px; }
+div.admonition { border-radius: 5px; }
+table.docutils td, table.docutils th { padding: 8px; }
+@media (max-width: 875px) { div.document { margin-top: 0; } }

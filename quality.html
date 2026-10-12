@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Documentation quality and technical debt &#8212; Sprint 06 - Personal Assistant API</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=4ded8224" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=4c7bc72c" />
+    <script src="_static/documentation_options.js?v=7cffc26f"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="GitLab CI and Pages" href="deployment.html" />
+    <link rel="prev" title="AI audit and provenance" href="audit.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Personal Assistant API | Sprint 06</a></h1>
+
+
+
+<p class="blurb">Structured docstrings, verified examples, and an evidence-based AI audit.</p>
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Run the sandbox and build the reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Python API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Contract and implementation boundaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audit.html">AI audit and provenance</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation quality and technical debt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">GitLab CI and Pages</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="audit.html" title="previous chapter">AI audit and provenance</a></li>
+      <li>Next: <a href="deployment.html" title="next chapter">GitLab CI and Pages</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="documentation-quality-and-technical-debt">
+<h1>Documentation quality and technical debt<a class="headerlink" href="#documentation-quality-and-technical-debt" title="Link to this heading">¶</a></h1>
+<p>Google-style docstrings use descriptions, typed parameters, return values,
+errors and runnable examples. Napoleon converts them to reStructuredText for
+autodoc. Examples use one domain schema, with synthetic local data and no
+provider calls. <code class="docutils literal notranslate"><span class="pre">-W</span></code> makes warnings fail the build; <code class="docutils literal notranslate"><span class="pre">-n</span></code> checks unresolved
+references. A separate doctest build executes examples.</p>
+<p><code class="docutils literal notranslate"><span class="pre">chinchilla_quality_audit.md</span></code> records six operational quality checks and the
+limits of their attribution. The supplied handout cites Chinchilla Chapter 7
+but does not enumerate its six principles. The textbook passage was not
+provided; this package does not invent its exact wording or claim a page-level
+reading. Replace the operational labels with verified course labels if needed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">technical_debt_audit.md</span></code> records a token-based scan of authored Python
+comments. Vendored assets and generated output are excluded. Unresolved markers
+must reference a real GitLab issue ID; fabricated IDs are not accepted.</p>
+<p>The Calendar sample regression found in the supplied repository was resolved:
+its commented-out confirmation request prevented the advertised workflow from
+executing. The original unconfirmed-execution rejection test remains in place.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2026, P. Dulguun.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/quality.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

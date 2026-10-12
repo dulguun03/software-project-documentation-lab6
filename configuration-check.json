@@ -1,0 +1,8 @@
+{
+  "yaml_syntax": "passed (PyYAML); hosted GitLab CI Lint pending",
+  "pages_directory": "public",
+  "deploy_requires_verification": true,
+  "server_and_client_behavior_unchanged": true,
+  "sample_fix": "Restored explicit confirmation for pre-reviewed fixture; unified scenario",
+  "baseline_commit": "58bc6e04c752a24e0e260d78926c507df73aa320"
+}

@@ -1,0 +1,40 @@
+Running Sphinx v8.2.3
+loading translations [en]... done
+loading intersphinx inventory 'python' from C:\Users\PDulg\.codex\.chatgpt-projects\g-p-6aae9f17d558819181ed73ef4891c83d\output\sprint06-submission\docs\source\_inventories\python.inv ...
+building [mo]: targets for 0 po files that are out of date
+writing output... 
+building [doctest]: targets for 7 source files that are out of date
+updating environment: [new config] 7 added, 0 changed, 0 removed
+reading sources... [ 14%] api
+reading sources... [ 29%] audit
+reading sources... [ 43%] deployment
+reading sources... [ 57%] index
+reading sources... [ 71%] quality
+reading sources... [ 86%] quickstart
+reading sources... [100%] workflow
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+copying assets... 
+copying assets: done
+running tests...
+
+Document: api
+-------------
+1 items passed all tests:
+  71 tests in default
+71 tests in 1 items.
+71 passed and 0 failed.
+Test passed.
+
+Doctest summary
+===============
+   71 tests
+    0 failures in tests
+    0 failures in setup code
+    0 failures in cleanup code
+build succeeded.
+
+Testing of doctests in the sources finished, look at the results in output\sprint06-submission\.build\doctest/output.txt.

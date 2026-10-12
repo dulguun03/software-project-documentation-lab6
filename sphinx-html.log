@@ -1,0 +1,39 @@
+Running Sphinx v8.2.3
+loading translations [en]... done
+loading pickled environment... The configuration has changed (1 option: 'html_css_files')
+done
+loading intersphinx inventory 'python' from C:\Users\PDulg\.codex\.chatgpt-projects\g-p-6aae9f17d558819181ed73ef4891c83d\output\sprint06-submission\docs\source\_inventories\python.inv ...
+building [mo]: targets for 0 po files that are out of date
+writing output... 
+building [html]: targets for 1 source files that are out of date
+updating environment: 0 added, 1 changed, 0 removed
+reading sources... [100%] api
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+copying assets... 
+copying static files... 
+Writing evaluated template result to C:\Users\PDulg\.codex\.chatgpt-projects\g-p-6aae9f17d558819181ed73ef4891c83d\output\sprint06-submission\public\_static\basic.css
+Writing evaluated template result to C:\Users\PDulg\.codex\.chatgpt-projects\g-p-6aae9f17d558819181ed73ef4891c83d\output\sprint06-submission\public\_static\documentation_options.js
+Writing evaluated template result to C:\Users\PDulg\.codex\.chatgpt-projects\g-p-6aae9f17d558819181ed73ef4891c83d\output\sprint06-submission\public\_static\language_data.js
+Writing evaluated template result to C:\Users\PDulg\.codex\.chatgpt-projects\g-p-6aae9f17d558819181ed73ef4891c83d\output\sprint06-submission\public\_static\alabaster.css
+copying static files: done
+copying extra files... 
+copying extra files: done
+copying assets: done
+writing output... [ 50%] api
+writing output... [100%] index
+
+generating indices... genindex py-modindex done
+highlighting module code... [ 33%] client
+highlighting module code... [ 67%] pathlib
+highlighting module code... [100%] server
+
+writing additional pages... search done
+dumping search index in English (code: en)... done
+dumping object inventory... done
+build succeeded.
+
+The HTML pages are in output\sprint06-submission\public.

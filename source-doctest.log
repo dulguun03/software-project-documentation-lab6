@@ -1,0 +1,449 @@
+Trying:
+    fields({"session_id": "session_anu_01"}, ["session_id"])
+Expecting nothing
+ok
+Trying:
+    text_fields({"session_id": "session_anu_01"}, ["session_id"])
+Expecting nothing
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.correlation = "corr_sandbox_0001"
+Expecting nothing
+ok
+Trying:
+    handler.envelope("proposed", "Review Sprint 06 review before confirming.")
+Expecting:
+    {'status': 'proposed', 'user_message': 'Review Sprint 06 review before confirming.', 'correlation_id': 'corr_sandbox_0001'}
+ok
+Trying:
+    from unittest.mock import patch
+Expecting nothing
+ok
+Trying:
+    with patch.object(SimpleHTTPRequestHandler, "__init__", return_value=None) as initialize:
+        handler = Handler("client-socket", ("127.0.0.1", 12345), "sandbox-server")
+        print(initialize.call_args.kwargs["directory"] == str(ROOT / "public"))
+Expecting:
+    True
+ok
+Trying:
+    from types import SimpleNamespace
+Expecting nothing
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.server = SimpleNamespace(actions={}, history={}, provider_calls=0)
+Expecting nothing
+ok
+Trying:
+    handler.correlation = "corr_sandbox_0001"
+Expecting nothing
+ok
+Trying:
+    handler.path = "/v1/commands"
+Expecting nothing
+ok
+Trying:
+    payload = {
+        "session_id": "session_anu_01",
+        "transcript": "Create Sprint 06 review at 10:00 in Ulaanbaatar.",
+        "intent": "calendar.create",
+        "event": {"title": "Sprint 06 review", "start": "2026-10-12T10:00+08:00",
+                  "end": "2026-10-12T10:30+08:00", "timezone": "Asia/Ulaanbaatar"},
+    }
+Expecting nothing
+ok
+Trying:
+    code, proposal = handler.dispatch(payload)
+Expecting nothing
+ok
+Trying:
+    code, proposal["action_id"], proposal["status"]
+Expecting:
+    (200, 'action_0001', 'proposed')
+ok
+Trying:
+    action_request = {"session_id": "session_anu_01", "payload_version": 1}
+Expecting nothing
+ok
+Trying:
+    handler.path = "/v1/actions/action_0001/confirm"
+Expecting nothing
+ok
+Trying:
+    code, result = handler.dispatch(action_request)
+Expecting nothing
+ok
+Trying:
+    result["status"]
+Expecting:
+    'confirmed'
+ok
+Trying:
+    handler.path = "/v1/actions/action_0001/execute"
+Expecting nothing
+ok
+Trying:
+    code, result = handler.dispatch(action_request)
+Expecting nothing
+ok
+Trying:
+    code, result = handler.dispatch(action_request)
+Expecting nothing
+ok
+Trying:
+    result["status"], handler.server.provider_calls, len(handler.server.history["session_anu_01"])
+Expecting:
+    ('succeeded', 1, 1)
+ok
+Trying:
+    from io import BytesIO
+Expecting nothing
+ok
+Trying:
+    from types import SimpleNamespace
+Expecting nothing
+ok
+Trying:
+    from unittest.mock import Mock
+Expecting nothing
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.server = SimpleNamespace(lock=threading.Lock(), sequence=0, history={})
+Expecting nothing
+ok
+Trying:
+    handler.path = "/v1/sessions/history"
+Expecting nothing
+ok
+Trying:
+    raw = b'{"session_id": "session_anu_01"}'
+Expecting nothing
+ok
+Trying:
+    handler.headers = {"Content-Length": str(len(raw)), "Content-Type": "application/json", "Authorization": "Bearer " + TOKEN}
+Expecting nothing
+ok
+Trying:
+    handler.rfile, handler.connection = BytesIO(raw), Mock()
+Expecting nothing
+ok
+Trying:
+    handler.send_json = Mock()
+Expecting nothing
+ok
+Trying:
+    handler.do_POST()
+Expecting nothing
+ok
+Trying:
+    code, response = handler.send_json.call_args.args
+Expecting nothing
+ok
+Trying:
+    code, response["status"], response["items"]
+Expecting:
+    (200, 'succeeded', [])
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.correlation = "corr_sandbox_0001"
+Expecting nothing
+ok
+Trying:
+    result = handler.envelope("proposed", "Review Sprint 06 review.")
+Expecting nothing
+ok
+Trying:
+    result["status"], result["correlation_id"]
+Expecting:
+    ('proposed', 'corr_sandbox_0001')
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.log_message("Session %s", "session_anu_01") is None
+Expecting:
+    True
+ok
+Trying:
+    from unittest.mock import Mock
+Expecting nothing
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.path = "/v1/sessions/history"
+Expecting nothing
+ok
+Trying:
+    handler.request_bytes = b'{"session_id": "session_anu_01"}'
+Expecting nothing
+ok
+Trying:
+    handler.headers = {"Content-Length": str(len(handler.request_bytes)), "Content-Type": "application/json"}
+Expecting nothing
+ok
+Trying:
+    handler.connection = Mock()
+Expecting nothing
+ok
+Trying:
+    handler.parse_body()
+Expecting:
+    {'session_id': 'session_anu_01'}
+ok
+Trying:
+    from io import BytesIO
+Expecting nothing
+ok
+Trying:
+    handler = Handler.__new__(Handler)
+Expecting nothing
+ok
+Trying:
+    handler.request_version, handler.command = "HTTP/1.1", "POST"
+Expecting nothing
+ok
+Trying:
+    handler.requestline = "POST /v1/sessions/history HTTP/1.1"
+Expecting nothing
+ok
+Trying:
+    handler.wfile = BytesIO()
+Expecting nothing
+ok
+Trying:
+    handler.send_json(200, {"session_id": "session_anu_01"})
+Expecting nothing
+ok
+Trying:
+    json.loads(handler.wfile.getvalue().splitlines()[-1])
+Expecting:
+    {'session_id': 'session_anu_01'}
+ok
+Trying:
+    error = RequestError(409, "Confirm Sprint 06 review before execution.")
+Expecting nothing
+ok
+Trying:
+    print(error.status, error.message)
+Expecting:
+    409 Confirm Sprint 06 review before execution.
+ok
+Trying:
+    error = RequestError(400, "session_id must be a nonempty string.")
+Expecting nothing
+ok
+Trying:
+    error.status, error.message
+Expecting:
+    (400, 'session_id must be a nonempty string.')
+ok
+Trying:
+    server = SandboxServer(("127.0.0.1", 0))
+Expecting nothing
+ok
+Trying:
+    try:
+        print(server.actions, server.history, server.provider_calls)
+    finally:
+        server.server_close()
+Expecting:
+    {} {} 0
+ok
+Trying:
+    server = SandboxServer(("127.0.0.1", 0))
+Expecting nothing
+ok
+Trying:
+    try:
+        print(server.sequence, server.provider_calls)
+    finally:
+        server.server_close()
+Expecting:
+    0 0
+ok
+Trying:
+    payload = {"session_id": "session_anu_01"}
+Expecting nothing
+ok
+Trying:
+    fields(payload, ["session_id"])
+Expecting nothing
+ok
+Trying:
+    payload
+Expecting:
+    {'session_id': 'session_anu_01'}
+ok
+Trying:
+    payload = {"session_id": "session_anu_01", "title": "Sprint 06 review"}
+Expecting nothing
+ok
+Trying:
+    fields(payload, ["session_id", "title"])
+Expecting nothing
+ok
+Trying:
+    text_fields(payload, ["session_id", "title"])
+Expecting nothing
+ok
+Trying:
+    payload["title"]
+Expecting:
+    'Sprint 06 review'
+ok
+15 items passed all tests:
+   2 tests in server
+   3 tests in server.Handler
+   2 tests in server.Handler.__init__
+  16 tests in server.Handler.dispatch
+  13 tests in server.Handler.do_POST
+   4 tests in server.Handler.envelope
+   2 tests in server.Handler.log_message
+   7 tests in server.Handler.parse_body
+   7 tests in server.Handler.send_json
+   2 tests in server.RequestError
+   2 tests in server.RequestError.__init__
+   2 tests in server.SandboxServer
+   2 tests in server.SandboxServer.__init__
+   3 tests in server.fields
+   4 tests in server.text_fields
+71 tests in 15 items.
+71 passed and 0 failed.
+Test passed.
+Trying:
+    import client
+Expecting nothing
+ok
+Trying:
+    from pathlib import Path
+Expecting nothing
+ok
+Trying:
+    photo = Path(client.__file__).resolve().parents[1] / "assets" / "einstein.png"
+Expecting nothing
+ok
+Trying:
+    data, media_type = client.multipart_file(
+        "photo", photo, "image/png", {"pet_id": "corgi_98231"})
+Expecting nothing
+ok
+Trying:
+    media_type
+Expecting:
+    'multipart/form-data; boundary=Sprint05MultipartBoundary91'
+ok
+Trying:
+    b'name="pet_id"\r\n\r\ncorgi_98231' in data
+Expecting:
+    True
+ok
+Trying:
+    b'name="photo"; filename="einstein.png"' in data
+Expecting:
+    True
+ok
+Trying:
+    photo.read_bytes() in data
+Expecting:
+    True
+ok
+Trying:
+    import client
+Expecting nothing
+ok
+Trying:
+    import io
+Expecting nothing
+ok
+Trying:
+    import json
+Expecting nothing
+ok
+Trying:
+    from contextlib import redirect_stdout
+Expecting nothing
+ok
+Trying:
+    from pathlib import Path
+Expecting nothing
+ok
+Trying:
+    from unittest.mock import patch
+Expecting nothing
+ok
+Trying:
+    photo = Path(client.__file__).resolve().parents[1] / "assets" / "einstein.png"
+Expecting nothing
+ok
+Trying:
+    data, media_type = client.multipart_file(
+        "photo", photo, "image/png", {"pet_id": "corgi_98231"})
+Expecting nothing
+ok
+Trying:
+    expected = {"pet_id": "corgi_98231", "photo_id": "photo_0001",
+                "filename": "einstein.png", "bytes_received": photo.stat().st_size}
+Expecting nothing
+ok
+Trying:
+    response = io.BytesIO(json.dumps(expected).encode("utf-8"))
+Expecting nothing
+ok
+Trying:
+    response.status = 200
+Expecting nothing
+ok
+Trying:
+    output = io.StringIO()
+Expecting nothing
+ok
+Trying:
+    with patch("client.urlopen", return_value=response) as transport:
+        with redirect_stdout(output):
+            result = client.post("/pets/upload-photo", body=data, content_type=media_type)
+Expecting nothing
+ok
+Trying:
+    result == expected
+Expecting:
+    True
+ok
+Trying:
+    json.loads(output.getvalue())["http_status"]
+Expecting:
+    200
+ok
+Trying:
+    transport.call_args.args[0].data == data
+Expecting:
+    True
+ok
+1 items had no tests:
+    client
+2 items passed all tests:
+   8 tests in client.multipart_file
+  16 tests in client.post
+24 tests in 3 items.
+24 passed and 0 failed.
+Test passed.

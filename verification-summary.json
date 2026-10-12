@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-12",
+  "timezone": "Asia/Ulaanbaatar",
+  "public_symbols": 16,
+  "unittest": {
+    "passed": 17,
+    "failed": 0,
+    "original_http_tests": 12,
+    "new_audit_tests": 5
+  },
+  "sphinx_html": {
+    "warnings": 0,
+    "status": "passed",
+    "version": "8.2.3"
+  },
+  "sphinx_doctest": {
+    "passed": 71,
+    "failed": 0
+  },
+  "source_doctest": {
+    "passed": 95,
+    "failed": 0,
+    "server": 71,
+    "client": 24
+  },
+  "gitlab_hosted_pipeline": "not run - project URL not provided",
+  "pages_public_url": null,
+  "specified_model_run": "GPT-4/Claude not run; Codex provenance documented",
+  "independent_human_manual_authoring": "not asserted",
+  "textbook_exact_six_principles": "not verified; handout-derived operational checks disclosed"
+}

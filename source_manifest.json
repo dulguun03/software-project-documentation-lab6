@@ -1,0 +1,178 @@
+{
+  "repository": "https://github.com/dulguun03/software-project-documentation",
+  "baseline_commit": "58bc6e04c752a24e0e260d78926c507df73aa320",
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "285b43821867a715e0fd364b69c8568ca0ae9af1af2c5ca9683d7781e81b4b4d"
+    },
+    {
+      "path": "__pycache__/server.cpython-312.pyc",
+      "sha256": "59613c5d1871812c8615060496f54fa42d5fc5a2660d32fcce851d20304c0fba"
+    },
+    {
+      "path": "assets/einstein-bark.wav",
+      "sha256": "c726d333dd159a31423f3480dbb1c5c4a9dfcd30efe1f7e12ade390dc92e8908"
+    },
+    {
+      "path": "assets/einstein.png",
+      "sha256": "6b1048f8a6d40bac0b2954c18fefa40c4ea7a96120fc2e54b7317c0e43c2bbec"
+    },
+    {
+      "path": "DEPLOYMENT.md",
+      "sha256": "db80facccd5932a205d9d0dd5cf6ba1f39143dacc6e4706c1f00a422ad239e10"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "26818e86f8c97e20713904a7c5e0956ced429e669ded28f53a0012f95e74c95b"
+    },
+    {
+      "path": "docs/audit-scorecard.md",
+      "sha256": "a581e3040a62fd7c737067ec93a3c2900cd89422588c535a7af15d4775289251"
+    },
+    {
+      "path": "docs/decision-report.md",
+      "sha256": "3e14f877dff5a14bc772436495e721d18ea59e2656915c023ce718bbaafbcc96"
+    },
+    {
+      "path": "docs/openapi/corgly.json",
+      "sha256": "959fc4391fcb4965eac5726f3805cb8b62bca4bd4b7ae2b168d7511a0137b4bf"
+    },
+    {
+      "path": "docs/openapi/corgly.yaml",
+      "sha256": "f704d51dd3994377d7bc65253cce4d458d307d193ccffb0b040efc9b39fdf902"
+    },
+    {
+      "path": "docs/openapi/openapi.json",
+      "sha256": "2b8ee6583d040e95009e5e4445bb71126957eba07d05eac6e5ed11b27e1c6c1c"
+    },
+    {
+      "path": "docs/openapi/openapi.yaml",
+      "sha256": "3f2ad698db91a651b8679591e7bee17fc816b86f99a335a5ac1933a6b1b57d21"
+    },
+    {
+      "path": "docs/report-mn.md",
+      "sha256": "7717e91809f03cf52d2753547e1937d32b8dabdb64e1b332538d8f37f0f7d5de"
+    },
+    {
+      "path": "evidence/corgly-redoc-build.txt",
+      "sha256": "83a8d4103e657e2d0f739f41a889a04d261cb311a66dad2056db29b251f95d6f"
+    },
+    {
+      "path": "evidence/lint-results.txt",
+      "sha256": "4a0a0fe421bc865c55591b18ed1a760a49794c56704691669a6e0a00e82c568d"
+    },
+    {
+      "path": "evidence/redoc-build.txt",
+      "sha256": "4873bd0c848756c5d4b26aa11e901a11cd3aa5dbbc0ef9949435a9168a355fdd"
+    },
+    {
+      "path": "evidence/redoc-view.png",
+      "sha256": "ec20c78b267640a9d9d319b4fcadf8c4f3c8fe58da4ad490935bab3d3534ff6f"
+    },
+    {
+      "path": "evidence/sample-responses.json",
+      "sha256": "d667080a7145c1354e0e3257faab9b889bf3c58a0764facc300ef1ad691a9482"
+    },
+    {
+      "path": "evidence/swagger-view.png",
+      "sha256": "1eff94cd6e8f8401921cc86e9dbf59e61fa47b4d065067a723e3508d96081ac8"
+    },
+    {
+      "path": "evidence/test-results.txt",
+      "sha256": "52e894c563501176e60bffe7eb8cfdce13a7c39b1eb524ca7d59c4448d29ad13"
+    },
+    {
+      "path": "evidence/verification-summary.md",
+      "sha256": "498e6839f155ec37d48f8d310c673cce57d1916871b1621df93d65212ad3e81f"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "1bf0139d7e2d18e6917f0e09c066f64730999b16f46aca98b26b6918d8953f2f"
+    },
+    {
+      "path": "package.json",
+      "sha256": "b866eed1f9eefc223c6f1986de9f7cd5990af91b99211a553287354d4b173de4"
+    },
+    {
+      "path": "public/corgly-redoc.html",
+      "sha256": "da3ffa3d17905d3be862fd1b3120fdaeb67fd14cc9f5563285a308b5549be64b"
+    },
+    {
+      "path": "public/corgly.yaml",
+      "sha256": "f704d51dd3994377d7bc65253cce4d458d307d193ccffb0b040efc9b39fdf902"
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "725e09b094712c022a8ecaf59bf29fa52f1aab91ad5eafb1005d9baf8f30f348"
+    },
+    {
+      "path": "public/openapi.yaml",
+      "sha256": "3f2ad698db91a651b8679591e7bee17fc816b86f99a335a5ac1933a6b1b57d21"
+    },
+    {
+      "path": "public/redoc.html",
+      "sha256": "3e6b0cc4663b07aba4f8af446696cca6fe83e599084a3e85880c460ae80d05ae"
+    },
+    {
+      "path": "public/swagger/index.html",
+      "sha256": "34afd675097bb2baf7028e26a5446eda52ab9eccb208c56cf6f8b33fc65fa4a1"
+    },
+    {
+      "path": "public/swagger/swagger-ui-bundle.js",
+      "sha256": "425a8bbc12fa7e821833726b9a868cce1438f11f89782b9ab78d3c5694e61d41"
+    },
+    {
+      "path": "public/swagger/swagger-ui.css",
+      "sha256": "a0cc253bd883bcb68d9e5a751b60ec88524662fa83d45f4fcc95a76ab1d4ea4a"
+    },
+    {
+      "path": "README.md",
+      "sha256": "20fa170fd39d77077103cabf6261806265bac1cff206126fe1c9abd5b75d5fee"
+    },
+    {
+      "path": "redocly.yaml",
+      "sha256": "9e0422a5c00bb0c464a2c51e7fefbddcd2c29bfd9e2b78252316e5f3732ee1ee"
+    },
+    {
+      "path": "samples/__pycache__/client.cpython-312.pyc",
+      "sha256": "7ca1c9ee54aa865cdf8441070055506c9ad61ce841a1b4975a753ea46f8ebd33"
+    },
+    {
+      "path": "samples/assistant_workflow.py",
+      "sha256": "3b983428245fef44398ad49adf98c01b11a230f374d574298cd94f0e0a78e187"
+    },
+    {
+      "path": "samples/client.py",
+      "sha256": "b7a8cfc250bee76d117a39ddf2b68f96a0a90981d4249da6c36d18f484f9cb0e"
+    },
+    {
+      "path": "samples/subscribe_webhook.py",
+      "sha256": "949cd4a6e8e061e74b36aa3d7711abf2ae07456b3637d81c2cf99b5606b43847"
+    },
+    {
+      "path": "samples/translate_bark.py",
+      "sha256": "1a1d78fb43b4073e90e49a7dd57998caf7c0842ec02e88b03ca8aa66ab69466b"
+    },
+    {
+      "path": "samples/upload_photo.py",
+      "sha256": "9d300a3117be7ffcc5140360c94beec51e2e9e1a374174a7e830fb5a215ea1af"
+    },
+    {
+      "path": "scripts/build-docs.mjs",
+      "sha256": "13f813e56d411478db9ff33e926b1c44efa1aebe097e4afaf419ad633dea2547"
+    },
+    {
+      "path": "server.py",
+      "sha256": "67b1d85a4441f1f9766437bb78905c62da676b29286e9da3ea3561b869500dcf"
+    },
+    {
+      "path": "tests/__pycache__/test_contracts.cpython-312.pyc",
+      "sha256": "77ea11364aa59fc949081e6b81ed00e0fd876b0745a102dd675d830dde83157c"
+    },
+    {
+      "path": "tests/test_contracts.py",
+      "sha256": "b516a4e882596e7949db8722c8e69d414a939782bbb20b0caffa025e13627a4d"
+    }
+  ]
+}

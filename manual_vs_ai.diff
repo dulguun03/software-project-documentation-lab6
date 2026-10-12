@@ -1,0 +1,504 @@
+--- audit/ai_docstring.py (signature-only Codex draft)
++++ manual_docstring.py (implementation-verified reference)
+@@ -1,219 +1,315 @@
+-"""Unaudited Handler documentation drafted from signatures and a goal only.
+-
+-This comparison artifact is a Python skeleton. All method bodies intentionally
+-contain ``pass``; the file does not implement a server. No actual ``server.py``
+-implementation was inspected to produce this draft. Examples are hypothetical
+-and were not executed. API routes, payload fields, status codes, storage,
+-authorization checks, and return schemas below require implementation review.
++"""Implementation-verified Handler reference snapshot, prepared with AI help.
++
++The lab requests this filename. It does not establish independent human manual
++authorship. Method bodies are intentionally pass; server.py is the executable
++implementation. Docstrings are copied from the corrected production class.
+ """
+-
+ from http.server import SimpleHTTPRequestHandler
+ 
+-
+ class Handler(SimpleHTTPRequestHandler):
+-    """Handle Calendar commands in a local personal assistant sandbox.
+-
+-    The intended interaction is command, confirmation, then execution. This
+-    draft assumes that a command proposes a Calendar change, a confirmation
+-    records the user's decision, and execution applies an approved change.
+-    The actual number of HTTP requests and their routes are unknown.
+-
+-    Assumptions:
+-        JSON objects are used for POST requests and responses. A session ID
+-        associates requests with a pending proposal. Pending proposals live in
+-        memory and are lost on restart; durable persistence is unverified.
+-        Confirmation is checked before a Calendar change is executed. The
+-        authentication mechanism, authorization policy, binding address, and
+-        whether execution changes a real calendar are unknown.
++    """Serve static documentation and implement the sandbox POST API.
++
++    Inherited GET/HEAD behavior serves ``ROOT / "public"``. The server creates
++    one handler for an accepted client connection; inherited initialization
++    processes that connection immediately. Helpers can be demonstrated without
++    network activity by creating an inert instance with ``__new__`` and setting
++    the state each helper requires.
++
++    Args:
++        *args (object): Positional arguments forwarded to the inherited request
++            constructor: client socket, client address, and server instance.
++        **kwargs (object): Supported inherited constructor keyword arguments,
++            such as ``request``, ``client_address``, and ``server`` when not
++            supplied positionally. Do not supply ``directory``; this class
++            supplies its static documentation directory explicitly.
++
++    Attributes:
++        server (SandboxServer): Server providing shared action state and lock.
++        correlation (str): Generated correlation ID, assigned by ``do_POST``.
++        request_bytes (bytes): Capped request body read by ``do_POST`` before
++            ``parse_body`` is called.
++
++    Returns:
++        Handler: Handler that has processed its supplied client connection.
++
++    Raises:
++        TypeError: If inherited constructor arguments are missing, duplicated,
++            unsupported, or include a second ``directory`` value.
++        OSError: If inherited socket setup, request processing, or cleanup fails.
+ 
+     Examples:
+-        Illustrative payloads only; these field names are not verified::
+-
+-            command = {
+-                "action": "command",
+-                "session_id": "session_anu_01",
+-                "text": "Schedule Sprint 06 review at 2026-10-12 10:00+08:00",
+-            }
+-            confirmation = {
+-                "action": "confirmation",
+-                "session_id": "session_anu_01",
+-                "confirmed": True,
+-            }
+-            execution = {
+-                "action": "execution",
+-                "session_id": "session_anu_01",
+-            }
+-
+-        The timestamp carries an explicit UTC offset. The parser's accepted
+-        timestamp syntax and timezone handling have not been verified.
++        >>> handler = Handler.__new__(Handler)
++        >>> handler.correlation = "corr_sandbox_0001"
++        >>> handler.envelope("proposed", "Review Sprint 06 review before confirming.")
++        {'status': 'proposed', 'user_message': 'Review Sprint 06 review before confirming.', 'correlation_id': 'corr_sandbox_0001'}
+     """
+ 
+     def __init__(self, *args, **kwargs):
+-        """Initialize a request handler for the sandbox server.
+-
+-        Args:
+-            *args: Assumed positional arguments forwarded to the base request
+-                handler, such as the request socket, client address, and server.
+-            **kwargs: Assumed keyword arguments forwarded to the base handler.
+-                Supported application-specific arguments are unknown.
+-
+-        Raises:
+-            TypeError: Assumed to propagate if arguments are incompatible with
+-                the base constructor. Actual exception handling is unverified.
+-            OSError: Assumed to propagate if underlying request I/O fails.
+-
+-        Note:
+-            This draft assumes the method invokes the base constructor. Request
+-            processing, shared state initialization, and lifetime need review.
++        """Process a connection using the fixed static documentation directory.
++
++        This forwards to ``SimpleHTTPRequestHandler`` and ultimately
++        ``BaseRequestHandler(request, client_address, server)``. It handles the
++        connection during construction rather than deferring processing.
++
++        Args:
++            *args (object): Inherited positional arguments: client socket,
++                client address, and server, in that order.
++            **kwargs (object): Equivalent inherited keyword arguments when not
++                already positional. ``directory`` is supplied by this method
++                and must not also appear here.
++
++        Returns:
++            None: Initializes and processes the inherited request handler.
++
++        Raises:
++            TypeError: If forwarded arguments are invalid, missing, duplicated,
++                or include a conflicting ``directory`` argument.
++            OSError: If inherited socket setup, request handling, or cleanup
++                cannot complete.
++
++        Examples:
++            Mock inherited initialization to inspect the directory argument
++            without opening or processing a connection:
++
++            >>> from unittest.mock import patch
++            >>> with patch.object(SimpleHTTPRequestHandler, "__init__", return_value=None) as initialize:
++            ...     handler = Handler("client-socket", ("127.0.0.1", 12345), "sandbox-server")
++            ...     print(initialize.call_args.kwargs["directory"] == str(ROOT / "public"))
++            True
+         """
+         pass
+ 
+     def log_message(self, format, *args):
+-        """Format a request log message using the handler's logging policy.
+-
+-        Args:
+-            format: Assumed printf-style format string supplied by the HTTP
+-                handler infrastructure.
+-            *args: Assumed values substituted into ``format``.
+-
+-        Returns:
+-            None: Assumed logging-only return value.
+-
+-        Note:
+-            This draft assumes messages are written to the default server log.
+-            The implementation may suppress or redirect them. Redaction of
+-            command text, session IDs, and other payload data is unknown.
++        """Suppress inherited access/error log messages and request content.
++
++        Args:
++            format (str): Format string passed by inherited HTTP logging hooks.
++                It is accepted for compatibility and ignored.
++            *args (object): Formatting values accepted and ignored.
++
++        Returns:
++            None: No log output is produced.
++
++        Notes:
++            No exceptions are raised. The method does not format, inspect, or write its arguments.
++
++        Examples:
++            >>> handler = Handler.__new__(Handler)
++            >>> handler.log_message("Session %s", "session_anu_01") is None
++            True
+         """
+         pass
+ 
+     def send_json(self, code, body):
+-        """Write an HTTP response containing a JSON-encoded body.
+-
+-        Args:
+-            code: Assumed integer HTTP status code, such as ``200`` or ``400``.
+-            body: Assumed JSON-serializable response object.
+-
+-        Returns:
+-            None: Assumed to write the response rather than return its contents.
+-
+-        Raises:
+-            TypeError: Assumed to propagate if ``body`` is not JSON-serializable.
+-            OSError: Assumed to propagate if writing the response fails.
+-
+-        Note:
+-            This draft assumes UTF-8 encoding, an ``application/json`` content
+-            type, a matching content length, and one completed HTTP response.
+-            Exact headers, serialization settings, and error handling are
+-            unverified. Callers should not infer CORS behavior from this draft.
++        """Write a UTF-8 JSON HTTP response with caching disabled.
++
++        Args:
++            code (int): HTTP status code passed to the inherited response writer.
++            body (object): JSON-serializable response value. Non-ASCII text is
++                emitted directly in UTF-8.
++
++        Returns:
++            None: Writes status, content headers, and encoded body to ``wfile``.
++
++        Raises:
++            TypeError: If the body is not JSON-serializable or the status code
++                is incompatible with inherited HTTP formatting.
++            ValueError: If JSON serialization finds a circular container.
++            UnicodeError: If text cannot be encoded as UTF-8.
++            OSError: If the response stream cannot be written.
++            AttributeError: If inherited request state or the output stream
++                has not been initialized.
++
++        Examples:
++            Use an in-memory stream with the inherited response writer:
++
++            >>> from io import BytesIO
++            >>> handler = Handler.__new__(Handler)
++            >>> handler.request_version, handler.command = "HTTP/1.1", "POST"
++            >>> handler.requestline = "POST /v1/sessions/history HTTP/1.1"
++            >>> handler.wfile = BytesIO()
++            >>> handler.send_json(200, {"session_id": "session_anu_01"})
++            >>> json.loads(handler.wfile.getvalue().splitlines()[-1])
++            {'session_id': 'session_anu_01'}
+         """
+         pass
+ 
+     def envelope(self, status, message):
+-        """Build a common response envelope for a sandbox result.
+-
+-        Args:
+-            status: Assumed application status string describing an outcome,
+-                for example ``"confirmation_required"`` or ``"success"``.
+-                The relationship to HTTP status codes is unknown.
+-            message: Assumed human-readable description of the outcome.
+-
+-        Returns:
+-            dict: Assumed mapping containing ``"status"`` and ``"message"``.
+-            Actual keys, nesting, extra metadata, and accepted types need review.
+-
+-        Examples:
+-            Illustrative only::
+-
+-                result = self.envelope(
+-                    "confirmation_required",
+-                    "Create Sprint 06 review at 2026-10-12 10:00+08:00?",
+-                )
++        """Create the common response fields for the current POST request.
++
++        Args:
++            status (str): Result state, such as ``proposed``, ``confirmed``,
++                ``succeeded``, or ``error``.
++            message (str): User-facing description of the result.
++
++        Returns:
++            dict[str, str]: ``status``, ``user_message``, and the handler's
++            current ``correlation_id``. Values are copied without validation.
++
++        Raises:
++            AttributeError: If ``correlation`` has not yet been assigned.
++
++        Examples:
++            >>> handler = Handler.__new__(Handler)
++            >>> handler.correlation = "corr_sandbox_0001"
++            >>> result = handler.envelope("proposed", "Review Sprint 06 review.")
++            >>> result["status"], result["correlation_id"]
++            ('proposed', 'corr_sandbox_0001')
+         """
+         pass
+ 
+     def parse_body(self):
+-        """Read and decode the current request's JSON payload.
+-
+-        Returns:
+-            dict: Assumed decoded JSON object. This draft assumes that arrays,
+-            scalar JSON values, and empty bodies are rejected. Actual accepted
+-            payload types and empty-body behavior are unknown.
+-
+-        Raises:
+-            ValueError: Assumed for a missing or invalid content length, an
+-                empty body, malformed JSON, or an unsupported JSON shape.
+-            UnicodeDecodeError: Assumed for body bytes that are not valid UTF-8.
+-            OSError: Assumed to propagate if reading the request body fails.
+-
+-        Note:
+-            This draft assumes the body is read using ``Content-Length``. Media
+-            type checks, request-size limits, short reads, transfer encoding,
+-            and exception translation require implementation review.
++        """Validate the declared body size and decode the previously read bytes.
++
++        ``do_POST`` must first populate ``request_bytes``. This helper does not
++        read from ``rfile`` or verify that the actual byte count equals the
++        declared length. It accepts JSON for ordinary paths and multipart form
++        data for the photo and bark-audio upload paths, and sets a ten-second
++        timeout on the connection.
++
++        Returns:
++            object: Decoded JSON value of any JSON type, or a multipart field
++            dictionary. Multipart text values are UTF-8 strings; file values
++            are dictionaries containing basename ``filename``, MIME
++            ``content_type``, and raw ``data`` bytes. Endpoint-specific object
++            and field validation occurs later in ``dispatch``.
++
++        Raises:
++            RequestError: With ``400`` for absent/invalid declared lengths,
++                malformed JSON or multipart structure, or duplicate multipart
++                fields; ``413`` for a declared length over ``LIMIT``; or
++                ``415`` for an unsupported content type.
++            UnicodeError: If a multipart text field cannot be decoded as UTF-8.
++            OSError: If setting the connection timeout fails.
++            AttributeError: If required handler state such as ``request_bytes``
++                has not been initialized.
++
++        Examples:
++            Decode a history request using an inert handler and mocked socket:
++
++            >>> from unittest.mock import Mock
++            >>> handler = Handler.__new__(Handler)
++            >>> handler.path = "/v1/sessions/history"
++            >>> handler.request_bytes = b'{"session_id": "session_anu_01"}'
++            >>> handler.headers = {"Content-Length": str(len(handler.request_bytes)), "Content-Type": "application/json"}
++            >>> handler.connection = Mock()
++            >>> handler.parse_body()
++            {'session_id': 'session_anu_01'}
+         """
+         pass
+ 
+     def do_POST(self):
+-        """Process a POST request for the Calendar interaction flow.
+-
+-        This draft assumes that the handler checks the requested route and
+-        JSON media type, parses a payload, dispatches it, and sends one JSON
+-        response. The actual route and division of responsibilities are unknown.
+-
+-        Returns:
+-            None: Assumed to deliver the outcome through the HTTP response.
+-
+-        Note:
+-            Hypothetical status mapping: ``200`` for a handled command,
+-            confirmation, or execution; ``400`` for malformed payloads;
+-            ``403`` for failed authorization; ``404`` for an unknown route;
+-            ``409`` for missing or stale confirmation; ``415`` for an unsupported
+-            media type; and ``500`` for an unexpected failure. No listed code
+-            or error conversion is confirmed by the supplied signatures.
+-
+-            The draft assumes errors become JSON responses. Exceptions that
+-            escape this method, credential checks, and whether a confirmation
+-            response itself triggers execution need inspection.
++        """Authenticate, parse, dispatch, and respond to one sandbox POST request.
++
++        The server lock protects correlation numbering and endpoint state for
++        the complete operation. Request reads are capped at ``LIMIT + 1`` bytes.
++        Authorization must be ``Bearer `` followed by ``TOKEN``; a missing or
++        invalid value produces ``401``. The optional ``X-Sandbox-Failure`` header
++        simulates ``403``, ``500``, or ``503`` before dispatch. ``RequestError``
++        becomes its specified HTTP error response;
++        field/JSON type errors become ``400`` and other processing exceptions
++        become ``500``.
++
++        Returns:
++            None: Writes one JSON response when the connection remains usable.
++
++        Raises:
++            OSError: If writing an error response also fails, for example after
++                a client disconnect. Errors while sending the normal response
++                first trigger an attempted ``500`` response.
++            AttributeError: If the handler lacks server lock/counter state
++                needed before entering its exception-handling block.
++
++        Examples:
++            Capture a response using in-memory request data and test doubles:
++
++            >>> from io import BytesIO
++            >>> from types import SimpleNamespace
++            >>> from unittest.mock import Mock
++            >>> handler = Handler.__new__(Handler)
++            >>> handler.server = SimpleNamespace(lock=threading.Lock(), sequence=0, history={})
++            >>> handler.path = "/v1/sessions/history"
++            >>> raw = b'{"session_id": "session_anu_01"}'
++            >>> handler.headers = {"Content-Length": str(len(raw)), "Content-Type": "application/json", "Authorization": "Bearer " + TOKEN}
++            >>> handler.rfile, handler.connection = BytesIO(raw), Mock()
++            >>> handler.send_json = Mock()
++            >>> handler.do_POST()
++            >>> code, response = handler.send_json.call_args.args
++            >>> code, response["status"], response["items"]
++            (200, 'succeeded', [])
+         """
+         pass
+ 
+     def dispatch(self, payload):
+-        """Route a decoded payload through command, confirmation, or execution.
+-
+-        Args:
+-            payload: Assumed dictionary containing ``action`` and ``session_id``.
+-                A command is assumed to contain ``text``; a confirmation is
+-                assumed to contain a boolean ``confirmed``. These field names
+-                and their requiredness are hypothetical.
+-
+-        Returns:
+-            tuple[int, dict]: Assumed pair of an HTTP status code and a response
+-            envelope for ``send_json()``. The implementation may instead write
+-            a response directly or use another return structure; verify it.
+-
+-        Raises:
+-            ValueError: Assumed if required fields are missing, have invalid
+-                types, or identify an unsupported action. The implementation
+-                may convert these conditions to returned error responses.
+-            PermissionError: Assumed if execution lacks valid approval or
+-                authorization. The actual security checks and error behavior
+-                are unknown.
+-
+-        Examples:
+-            Illustrative only, assuming the payload and return contracts above::
+-
+-                code, body = self.dispatch({
+-                    "action": "command",
+-                    "session_id": "session_anu_01",
+-                    "text": "Schedule Sprint 06 review at 2026-10-12 10:00+08:00",
+-                })
+-                self.send_json(code, body)
+-
+-        Note:
+-            This draft assumes a session-scoped pending command is stored until
+-            approval and that execution verifies approval before applying it.
+-            Confirmation must not be treated as proof of caller identity.
+-            Durable storage, replay prevention, idempotency, concurrent-session
+-            isolation, expiry, provider credentials, and actual Calendar side
+-            effects cannot be inferred from these signatures.
+-        """
+-        pass
++        """Execute the endpoint selected by ``path`` against sandbox fixtures.
++
++        Calendar requests propose actions; confirmation requires the matching
++        session and payload version. Execution requires confirmation and is
++        idempotent once successful: retries preserve one history record and one
++        simulated provider write. Other routes search fixture contacts, read
++        session history, inspect fixture uploads, or return a simulated webhook
++        subscription. No route invokes an external provider.
++
++        Authentication and locking belong to ``do_POST``; callers using this
++        helper directly must supply initialized server state and coordinate any
++        concurrent access themselves.
++
++        Args:
++            payload (dict[str, object]): Parsed endpoint request. Commands need
++                exactly ``session_id``, ``transcript``, ``intent``, and ``event``;
++                the supported intent is ``calendar.create``. Its event needs
++                ``title``, timezone-aware ISO ``start``/``end`` with end after
++                start, and ``timezone`` equal to ``Asia/Ulaanbaatar``. Action
++                confirmation/execution need ``session_id`` and positive integer
++                ``payload_version``. Other routes enforce their own exact field
++                sets. Uploads use the file dictionaries from ``parse_body``.
++
++        Returns:
++            tuple[int, dict[str, object]]: HTTP status and JSON response object.
++            Successful responses use ``200``, except webhook subscription
++            creation uses ``201``. Command/action, contact, and history results
++            include the common envelope; upload and subscription results have
++            their endpoint-specific fields.
++
++        Raises:
++            RequestError: With ``400`` for request validation failures, ``404``
++                for unknown endpoints/resources/session actions, ``409`` for
++                action version/state conflicts, or ``415`` for invalid upload
++                fixture types/signatures.
++            ValueError: If a datetime or callback URL cannot be parsed.
++            KeyError: If an upload dictionary lacks an accessed metadata field.
++            TypeError: If nested upload data has an incompatible value type.
++            AttributeError: If upload data lacks the expected byte operations,
++                or required handler/server state has not been initialized.
++
++        Examples:
++            Propose, confirm, and execute an action entirely in memory. Repeating
++            execution does not duplicate the simulated provider write:
++
++            >>> from types import SimpleNamespace
++            >>> handler = Handler.__new__(Handler)
++            >>> handler.server = SimpleNamespace(actions={}, history={}, provider_calls=0)
++            >>> handler.correlation = "corr_sandbox_0001"
++            >>> handler.path = "/v1/commands"
++            >>> payload = {
++            ...     "session_id": "session_anu_01",
++            ...     "transcript": "Create Sprint 06 review at 10:00 in Ulaanbaatar.",
++            ...     "intent": "calendar.create",
++            ...     "event": {"title": "Sprint 06 review", "start": "2026-10-12T10:00+08:00",
++            ...               "end": "2026-10-12T10:30+08:00", "timezone": "Asia/Ulaanbaatar"},
++            ... }
++            >>> code, proposal = handler.dispatch(payload)
++            >>> code, proposal["action_id"], proposal["status"]
++            (200, 'action_0001', 'proposed')
++            >>> action_request = {"session_id": "session_anu_01", "payload_version": 1}
++            >>> handler.path = "/v1/actions/action_0001/confirm"
++            >>> code, result = handler.dispatch(action_request)
++            >>> result["status"]
++            'confirmed'
++            >>> handler.path = "/v1/actions/action_0001/execute"
++            >>> code, result = handler.dispatch(action_request)
++            >>> code, result = handler.dispatch(action_request)
++            >>> result["status"], handler.server.provider_calls, len(handler.server.history["session_anu_01"])
++            ('succeeded', 1, 1)
++        """
++        pass
